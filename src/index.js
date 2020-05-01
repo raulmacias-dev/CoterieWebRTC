@@ -15,6 +15,10 @@ app.get('/', (req, res) => {
   res.send('CoterieWebRTC Server');
 });
 
+app.get('/users', (req, res) => {
+  res.send(users);
+});
+
 let users = [];
 
 //socket io logic
