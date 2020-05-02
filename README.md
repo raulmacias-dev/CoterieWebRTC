@@ -20,16 +20,16 @@ npm run dev
 
 |  name  |                          params                           |                        description                         |
 | :----: | :-------------------------------------------------------: | :--------------------------------------------------------: |
-| `join` |                          string                           | emit to this event to join the chat with a unique username |
-| `call` | `{ username: string, offer: { type: string, sdp: any } }` | call to some user by `username` and you need pass `offer`  |
-| `answer` | `{ username: string, answer: { type: string, sdp: any } }` | send your response to someone request call to by `username` and you need pass `answer`  |
-| `candidate` | `{ username: string, candidate: { candidate: string, sdpMid: string, sdpMLineIndex: int } }` | when the two parts has been joined to one the call, both need send yours candidates to the other  |
+| `join` |                          string                           | unirse al chat con un `username` único |
+| `call` | `{ username: string, offer: { type: string, sdp: any } }` | llama a un usuario por su `username` y necesitas pasar el `offer`  |
+| `answer` | `{ username: string, answer: { type: string, sdp: any } }` | envia una respuesta a alguien que solicite una llamada por `username` y necesitas pasar el `answer`  |
+| `candidate` | `{ username: string, candidate: { candidate: string, sdpMid: string, sdpMLineIndex: int } }` | cuando las dos partes se han unido a una llamada, ambos necesitan enviar sus `ICECandidates` a la otra parte  |
 # Ons
 
 |  name  |                          params                           |                        description                         |
 | :----: | :-------------------------------------------------------: | :--------------------------------------------------------: |
-| `on-join` |                          boolean                           | this listener is the response to your `join` , if the param `boolean` is true you are joined the chat |
-| `on-call` | `{ username: string, offer: { type: string, sdp: any } }` | incoming call  |
-| `on-answer` | `{ type: string, sdp: any }` | response to your `call`  |
-| `on-candidate` | `{ candidate: string, sdpMid: string, sdpMLineIndex: int }` | listen the candidate to the other user  |
+| `on-join` |                          boolean                           | este listeneres la respuesta a `join` , si el parametro `boolean` es True se unió al chat |
+| `on-call` | `{ username: string, offer: { type: string, sdp: any } }` | llamada entrante  |
+| `on-answer` | `{ type: string, sdp: any }` | respuesta e una `call`  |
+| `on-candidate` | `{ candidate: string, sdpMid: string, sdpMLineIndex: int }` | escucha el `ICECandidate` de la otra parte  |
  
