@@ -28,7 +28,7 @@ npm run dev
 
 |  name  |                          params                           |                        description                         |
 | :----: | :-------------------------------------------------------: | :--------------------------------------------------------: |
-| `on-join` |                          boolean                           | este listeneres la respuesta a `join` , si el parametro `boolean` es True se unió al chat |
+| `on-join` |                          boolean                           | este listener es la respuesta a `join` , si el parametro `boolean` es True se unió al chat |
 | `on-call` | `{ username: string, offer: { type: string, sdp: any } }` | llamada entrante  |
 | `on-answer` | `{ type: string, sdp: any }` | respuesta e una `call`  |
 | `on-candidate` | `{ candidate: string, sdpMid: string, sdpMLineIndex: int }` | escucha el `ICECandidate` de la otra parte  |
