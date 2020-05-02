@@ -19,6 +19,12 @@ app.get('/users', (req, res) => {
   res.send(users);
 });
 
+app.get('/clean', (req, res) => {
+  users = [];
+  res.send(users);
+});
+
+
 let users = [];
 
 //socket io logic
