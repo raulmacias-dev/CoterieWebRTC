@@ -23,15 +23,18 @@ let users = [];
 
 //socket io logic
 io.on('connection', socket => {
+
   socket.on('join', username => {
     let user = users.find(item => item === username);
     if (user) {
       io.to(socket.id).emit('on-join', false);
+      console.log('Usuario ya existe');
     } else {
       socket.join(username); // assign the username to the current socket
       socket.handshake.query.username = username;
       users.push(username);
       io.to(socket.id).emit('on-join', true);
+      console.log('Usuario conectado' + username);
     }
   });
 
