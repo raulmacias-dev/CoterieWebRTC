@@ -16,6 +16,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/users', (req, res) => {
+  res.contentType('application/json');
   res.send(users);
 });
 
