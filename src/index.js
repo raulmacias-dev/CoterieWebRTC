@@ -49,6 +49,17 @@ io.on('connection', socket => {
     }
   });
 
+  socket.on('participate', username =>{
+    let user = users.find(item => item === username);
+    if (user) {
+      const me = socket.handshake.query.username;
+      console.log('participate', username);
+      io.to(username).emit('on-participate', { username: me});
+    } else {
+      console.log('usuario no encontrado');
+    }
+  })
+
   //
   socket.on('call', ({ username, offer }) => {
     console.log('call', username);
