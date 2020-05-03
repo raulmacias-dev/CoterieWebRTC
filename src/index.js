@@ -28,6 +28,7 @@ io.on('connection', socket => {
     let user = users.find(item => item === username);
     if (user) {
       io.to(socket.id).emit('on-join', false);
+      socket.broadcast.emit('on-users',users);
       console.log('Usuario ya existe');
     } else {
       socket.join(username); // assign the username to the current socket
