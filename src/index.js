@@ -12,24 +12,21 @@ const server = http.Server(app);
 const io = socketio(server);
 
 app.get('/', (req, res) => {
-  res.send('CoterieWebRTC Server');
+  res.send('CoterieWebRTC');
 });
-
-app.get('/users', (req, res) => {
-  res.contentType('application/json');
-  res.send(users);
-});
-
-app.get('/clean', (req, res) => {
-  users = [];
-  res.send(users);
-});
-
 
 let users = [];
 
 //socket io logic
 io.on('connection', socket => {
+
+  socket.on('users',()=>{
+    io.to(socket.id).emit('on-users',users);
+  });
+
+  socket.on('clear',()=>{
+    users = [];
+  });
 
   socket.on('join', username => {
     let user = users.find(item => item === username);
