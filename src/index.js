@@ -60,6 +60,17 @@ io.on('connection', socket => {
     }
   })
 
+  socket.on('wait', username =>{
+    let user = users.find(item => item === username);
+    if (user) {
+      const me = socket.handshake.query.username;
+      console.log('wait', username);
+      io.to(username).emit('on-wait', { username: me});
+    } else {
+      console.log('usuario no encontrado');
+    }
+  })
+
   //
   socket.on('call', ({ username, offer }) => {
     console.log('call', username);
