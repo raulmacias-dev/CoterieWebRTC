@@ -20,10 +20,6 @@ let users = [];
 //socket io logic
 io.on('connection', socket => {
 
-  socket.on('users',()=>{
-    io.to(socket.id).emit('on-users',users);
-  });
-
   socket.on('clear',()=>{
     users = [];
   });
@@ -38,6 +34,7 @@ io.on('connection', socket => {
       socket.handshake.query.username = username;
       users.push(username);
       io.to(socket.id).emit('on-join', true);
+      socket.broadcast.emit('on-users',users);
       console.log('Usuario conectado' + username);
     }
   });
