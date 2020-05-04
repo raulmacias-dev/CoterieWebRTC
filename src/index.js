@@ -19,6 +19,8 @@ app.get('/users', (req, res) => {
     res.send(users);
 });
 
+
+
 let users = [      
 {
   name: "rmacias",
@@ -34,6 +36,14 @@ let users = [
   isTaken: false,
   inCall: false
 }];
+
+function listOfUsers(){
+  let obj = Array.from(users).reduce(
+    (obj, [key, value]) => Object.assign(obj, { [key]: value }), // Be careful! Maps can have non-String keys; object literals can't.
+    {}
+  );
+  return obj;
+}
 
 let requests = []
 
@@ -54,7 +64,7 @@ function deleteUser(username){
 //socket io logic
 io.on('connection', socket => {
 
-  io.to(socket.id).emit('on-connected',users)
+  io.to(socket.id).emit('on-connected',listOfUsers())
 
   socket.on('pick',(username)=>{
     let user = users.find(item => item.name === username);
