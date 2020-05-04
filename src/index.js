@@ -140,10 +140,10 @@ io.on('connection', socket => {
   });
 
   socket.on('candidate', ({ him, candidate }) => {
-    console.log('candidate', username);
+    console.log('candidate', him);
     let user = users.find(item => item.name === him);
     if (user) {
-      console.log('candidate to', username);
+      console.log('candidate to', user.name);
       socket.broadcast.to(him).emit('on-candidate', candidate);
     }
   });
