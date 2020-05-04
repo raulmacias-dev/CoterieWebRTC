@@ -19,6 +19,26 @@ app.get('/users', (req, res) => {
     res.send(users);
 });
 
+app.get('/reset', (req, res) => {
+  users = [      
+    {
+      name: "rmacias",
+      avatar:
+        "https://superherotar.framiq.com/assets/examples/superherotar00.png",
+      isTaken: false,
+      inCall: false
+    },
+    {
+      name: "wizard",
+      avatar:
+        "https://superherotar.framiq.com/assets/examples/superherotar05.png",
+      isTaken: false,
+      inCall: false
+    }];
+    
+  res.send(users);
+});
+
 
 
 let users = [      
