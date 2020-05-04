@@ -104,27 +104,12 @@ io.on('connection', socket => {
     // FUNCION PARA FINALIZAR LLAMADA
     socket.on('endcall', username => {
         let user = users.find(item => item === username);
-        let indexUser = users.find(item => item === username);
 
         if (user) {
             let me = socket.handshake.query.username;
-            let indexMe = users.find(item => item === me);
-
             console.log('endcall', username);
             io.to(username).emit('on-endcall', { username: me });
-
-            //Quitamos ambos usuarios de la lista
-            if (indexMe !== -1) {
-                users = users.splice(index, 1);
-            }
-            if (indexMe !== -1) {
-                users = users.splice(index, 1);
-            }
-
         } else {
-            if (indexMe !== -1) {
-                users = users.splice(index, 1);
-            }
             console.log('usuario no encontrado');
         }
     })
