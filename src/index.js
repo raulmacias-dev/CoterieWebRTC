@@ -56,12 +56,7 @@ function deleteUser(username){
 //socket io logic
 io.on('connection', socket => {
 
-  var result = users.reduce(function(map, obj) {
-    map[obj.key] = obj.val;
-    return map;
-  }, {});
-
-  io.to(socket.id).emit('on-connected',result)
+  io.to(socket.id).emit('on-connected',users)
 
   socket.on('pick',(username)=>{
     let user = users.find(item => item.name === username);
