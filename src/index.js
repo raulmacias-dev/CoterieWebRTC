@@ -50,19 +50,10 @@ function deleteUser(username){
     users = users.splice(index, 1); // remove the user from connected users
   }
 };
-=======
-app.get('/clear', (req, res) => {
-    users = [];
-    res.send(users);
-});
-
-let users = [];
->>>>>>> 3863d20086247e8bd5d4cbc3c8c06cd2a8047bdc
 
 //socket io logic
 io.on('connection', socket => {
 
-<<<<<<< HEAD
   io.to(socket.id).emit('on-connected',users)
 
   socket.on('pick',(username)=>{
@@ -157,103 +148,6 @@ io.on('connection', socket => {
       query.username = null;
     }
   });
-=======
-    socket.on('clear', () => {
-        users = [];
-    });
-
-    socket.on('join', username => {
-        let user = users.find(item => item === username);
-        if (user) {
-            io.to(socket.id).emit('on-join', false);
-            io.sockets.emit('on-users', users);
-            console.log('Usuario ya existe');
-        } else {
-            socket.join(username); // assign the username to the current socket
-            socket.handshake.query.username = username;
-            users.push(username);
-            io.to(socket.id).emit('on-join', true);
-            io.sockets.emit('on-users', users);
-            console.log('Usuario conectado' + username);
-        }
-    });
-
-    socket.on('participate', username => {
-        let user = users.find(item => item === username);
-        if (user) {
-            const me = socket.handshake.query.username;
-            console.log('participate', username);
-            io.to(username).emit('on-participate', { username: me });
-        } else {
-            console.log('usuario no encontrado');
-        }
-    })
-
-    socket.on('wait', username => {
-        let user = users.find(item => item === username);
-        if (user) {
-            const me = socket.handshake.query.username;
-            console.log('wait', username);
-            io.to(username).emit('on-wait', { username: me });
-        } else {
-            console.log('usuario no encontrado');
-        }
-    })
-
-    //
-    socket.on('call', ({ username, offer }) => {
-        console.log('call', username);
-        let user = users.find(item => item === username);
-        if (user) {
-            const me = socket.handshake.query.username;
-            console.log('call to', username);
-            io.to(username).emit('on-call', { username: me, offer });
-        } else {
-            console.log('usuario no encontrado');
-        }
-    });
-
-    socket.on('answer', ({ username, answer }) => {
-        let user = users.find(item => item === username);
-        if (user) {
-            console.log('answer to', username);
-            io.to(username).emit('on-answer', answer);
-        }
-    });
-
-    socket.on('candidate', ({ username, candidate }) => {
-        console.log('candidate', username);
-        let user = users.find(item => item === username);
-        if (user) {
-            console.log('candidate to', username);
-            io.to(username).emit('on-candidate', candidate);
-        }
-    });
-
-    // FUNCION PARA FINALIZAR LLAMADA
-    socket.on('endcall', username => {
-        let user = users.find(item => item === username);
-
-        if (user) {
-            let me = socket.handshake.query.username;
-            console.log('endcall', username);
-            io.to(username).emit('on-endcall', { username: me });
-        } else {
-            console.log('usuario no encontrado');
-        }
-    })
-
-
-    socket.on('disconnect', () => {
-        const { username } = socket.handshake.query;
-        if (username) {
-            const index = users.findIndex(item => item === username);
-            if (index !== -1) {
-                users = users.splice(index, 1); // remove the user from connected users
-            }
-        }
-    });
->>>>>>> 3863d20086247e8bd5d4cbc3c8c06cd2a8047bdc
 });
 
 const PORT = process.env.PORT || 5050;
