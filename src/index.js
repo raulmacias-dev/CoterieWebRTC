@@ -33,7 +33,7 @@ app.get('/reset', (req, res) => {
             inCall: false
         }
     ];
-
+    resetRequests();
     res.send(users);
 });
 
@@ -54,6 +54,13 @@ let users = [{
 ];
 
 let requests = []
+
+function resetRequests() {
+    requests.forEach((item) => {
+        deleteRequest(item.requestId);
+    })
+    requests = [];
+}
 
 function deleteRequest(requestId) {
     const index = requests.findIndex(item => item.requestId === requestId);
