@@ -125,7 +125,7 @@ io.on('connection', socket => {
         const request = requests.find(item => item.requestId === requestId);
 
         if (answer) {
-            let meUser = users.find(item => item.name === request.name);
+            let meUser = users.find(item => item.name === request.username);
             meUser.inCall = true;
             socket.join(requestId);
             socket.handshake.query.requestId = requestId;
