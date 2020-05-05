@@ -22,13 +22,13 @@ app.get('/users', (req, res) => {
 app.get('/reset', (req, res) => {
     users = [{
             name: "rmacias",
-            avatar: "https://superherotar.framiq.com/assets/examples/superherotar00.png",
+            avatar: "https://cdn4.iconfinder.com/data/icons/avatars-circle-2/72/146-512.png",
             isTaken: false,
             inCall: false
         },
         {
             name: "wizard",
-            avatar: "https://superherotar.framiq.com/assets/examples/superherotar05.png",
+            avatar: "https://avatarwizardsblog.com/images/stories/BlogPosts_Wiz2020/Round_CUAt.png",
             isTaken: false,
             inCall: false
         }
@@ -41,13 +41,13 @@ app.get('/reset', (req, res) => {
 
 let users = [{
         name: "rmacias",
-        avatar: "https://superherotar.framiq.com/assets/examples/superherotar00.png",
+        avatar: "https://cdn4.iconfinder.com/data/icons/avatars-circle-2/72/146-512.png",
         isTaken: false,
         inCall: false
     },
     {
         name: "wizard",
-        avatar: "https://superherotar.framiq.com/assets/examples/superherotar05.png",
+        avatar: "https://avatarwizardsblog.com/images/stories/BlogPosts_Wiz2020/Round_CUAt.png",
         isTaken: false,
         inCall: false
     }
