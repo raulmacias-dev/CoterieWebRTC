@@ -88,10 +88,10 @@ io.on('connection', socket => {
         let user = users.find(item => item.name === username);
         if (!user.isTaken) {
             user.isTaken = true;
-            socket.handshake.query.username = user.name;
-            socket.join(user.name);
-            io.to(socket.id).emit('on-assigned', user.name);
-            socket.broadcast.emit('on-taken', user.name);
+            socket.join(username);
+            socket.handshake.query.username = username;
+            io.to(socket.id).emit('on-assigned', username);
+            socket.broadcast.emit('on-taken', username);
         } else {
             io.to(socket.id).emit('on-assigned', null);
         }
@@ -100,12 +100,12 @@ io.on('connection', socket => {
     socket.on('request', ({ username, offer }) => {
         let calle = users.find(item => item.name === username);
         if (calle && !calle.inCall && calle.isTaken) {
-            const me = socket.handshake.query.username
-            const requestId = calle.name;
+            const me = socket.handshake.query.username;
+            const requestId = username;
             requests.push({ "createAt": new Date(), "requestId": requestId, "username": me });
             socket.join(requestId);
             socket.handshake.query.requestId = requestId;
-            io.to(calle.name).emit('on-request', { username: me, offer: offer, requestId: requestId });
+            io.to(username).emit('on-request', { username: me, offer: offer, requestId: requestId });
         } else {
             io.to(socket.id).emit('on-response', null);
         }
@@ -122,16 +122,18 @@ io.on('connection', socket => {
     });
 
     socket.on('response', ({ requestId, answer }) => {
-        const request = requests.find(item => item.requestId === requestId);
 
         if (answer) {
-            let meUser = users.find(item => item.name === request.username);
-            meUser.inCall = true;
+            let me = users.find(item => item.name === request.username);
+            me.inCall = true;
+            let calle = users.find(item => item.name === requestId);
+            calle.inCall = true;
+
             socket.join(requestId);
             socket.handshake.query.requestId = requestId;
-            io.to(request.name).emit('on-response', answer);
+            io.to(requestId).emit('on-response', answer);
         } else {
-            io.to(request.name).emit('on-response', null);
+            io.to(requestId).emit('on-response', null);
         }
 
     });
@@ -140,8 +142,8 @@ io.on('connection', socket => {
         console.log('candidate', him);
         let user = users.find(item => item.name === him);
         if (user) {
-            console.log('candidate to', user.name);
-            socket.broadcast.to(him).emit('on-candidate', candidate);
+            console.log('candidate to', him);
+            io.to(him).emit('on-candidate', candidate);
         }
     });
 
