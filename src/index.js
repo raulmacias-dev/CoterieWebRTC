@@ -91,7 +91,7 @@ io.on('connection', socket => {
         let calle = users.find(item => item.name === username);
         if (calle && !calle.inCall && calle.isTaken) {
             const me = socket.handshake.query.username
-            const requestId = `${calle.name}_${Date.now()}`;
+            const requestId = calle.name;
             const timeOutId = setTimeout(() => {
                 io.to(socket.id).emit('on-response', null);
                 requestId.io.to(calle.name).emit('on-cancel-request');
@@ -108,10 +108,10 @@ io.on('connection', socket => {
     })
 
     socket.on('cancel-request', () => {
-        const requestId = socket.handshake.query;
+        const requestId = socket.handshake.query.requestId;
         if (requestId) {
             deleteRequest(requestId);
-            const calle = requestId.split("_")[0];
+            const calle = requestId;
             socket.handshake.query.requestId = null;
             io.to(calle).emit('on-cancel-request');
         }
@@ -145,7 +145,7 @@ io.on('connection', socket => {
     });
 
     socket.on('finish-call', () => {
-        const requestId = socket.handshake.query;
+        const requestId = socket.handshake.query.requestId;
         if (requestId) {
             io.to(requestId).emit('on-finish-call');
         } else {
@@ -157,7 +157,7 @@ io.on('connection', socket => {
         const { query } = socket.handshake.query;
         if (query) {
             deleteRequest(query.requestId);
-            const calle = query.requestId.split("_")[0];
+            const calle = query.requestId;
             socket.handshake.query.requestId = null;
             io.to(calle).emit('on-cancell-request');
             io.to(query.username).emit('on-finish-call');
