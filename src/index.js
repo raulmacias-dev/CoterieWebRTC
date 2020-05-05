@@ -26,13 +26,11 @@ app.get('/reset', (req, res) => {
     users = [{
             name: "rmacias",
             avatar: "https://cdn4.iconfinder.com/data/icons/avatars-circle-2/72/146-512.png",
-            isTaken: false,
             inCall: false
         },
         {
             name: "wizard",
             avatar: "https://avatarwizardsblog.com/images/stories/BlogPosts_Wiz2020/Round_CUAt.png",
-            isTaken: false,
             inCall: false
         }
     ];
@@ -45,13 +43,11 @@ app.get('/reset', (req, res) => {
 let users = [{
         name: "rmacias",
         avatar: "https://cdn4.iconfinder.com/data/icons/avatars-circle-2/72/146-512.png",
-        isTaken: false,
         inCall: false
     },
     {
         name: "wizard",
         avatar: "https://avatarwizardsblog.com/images/stories/BlogPosts_Wiz2020/Round_CUAt.png",
-        isTaken: false,
         inCall: false
     }
 ];
@@ -82,16 +78,16 @@ function deleteUser(username) {
 //socket io logic
 io.on('connection', socket => {
 
+    console.log('User connected');
+
     io.to(socket.id).emit('on-connected', users)
 
     socket.on('pick', (username) => {
         let user = users.find(item => item.name === username);
-        if (!user.isTaken) {
-            user.isTaken = true;
+        if (user) {
             socket.join(username);
             socket.handshake.query.username = username;
             io.to(socket.id).emit('on-assigned', username);
-            socket.broadcast.emit('on-taken', username);
         } else {
             io.to(socket.id).emit('on-assigned', null);
         }
@@ -99,7 +95,7 @@ io.on('connection', socket => {
 
     socket.on('request', ({ username, offer }) => {
         let calle = users.find(item => item.name === username);
-        if (calle && !calle.inCall && calle.isTaken) {
+        if (calle && !calle.inCall) {
             const me = socket.handshake.query.username;
             const requestId = username;
             requests.push({ "createAt": new Date(), "requestId": requestId, "username": me });
@@ -124,10 +120,11 @@ io.on('connection', socket => {
     socket.on('response', ({ requestId, answer }) => {
 
         if (answer) {
-            let me = users.find(item => item.name === request.username);
-            me.inCall = true;
-            let calle = users.find(item => item.name === requestId);
-            calle.inCall = true;
+            //let req = requests.find(item => item.requestId === requestId);
+            //let me = users.find(item => item.name === req.username);
+            //me.inCall = true;
+            //let calle = users.find(item => item.name === requestId);
+            //calle.inCall = true;
 
             socket.join(requestId);
             socket.handshake.query.requestId = requestId;
@@ -165,7 +162,6 @@ io.on('connection', socket => {
             io.to(calle).emit('on-cancell-request');
             io.to(query.username).emit('on-finish-call');
             let user = users.find(item => item.name === query.username);
-            user.isTaken = false;
             query.username = null;
         }
     });
