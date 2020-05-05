@@ -139,9 +139,10 @@ io.on('connection', socket => {
             let meUser = users.find(item => item.name === me);
             meUser.inCall = true;
             socket.join(requestId);
-            io.to(username).emit('on-response', answer);
+            socket.handshake.query.requestId = requestId;
+            io.to(me).emit('on-response', answer);
         } else {
-            io.to(username).emit('on-response', null);
+            io.to(me).emit('on-response', null);
         }
 
     });
