@@ -30,7 +30,7 @@ app.get('/reset', (req, res) => {
         },
         {
             name: "wizard",
-            avatar: "https://avatarwizardsblog.com/images/stories/BlogPosts_Wiz2020/Round_CUAt.png",
+            avatar: "https://cdn4.iconfinder.com/data/icons/avatars-21/512/avatar-circle-human-male-3-512.png",
             inCall: false
         }
     ];
