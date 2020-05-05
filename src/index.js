@@ -8,7 +8,6 @@ dotenv.config();
 const app = express();
 const server = http.Server(app);
 const io = socketio(server);
-const TIME_OUT = 10000;
 
 
 app.get('/', (req, res) => {
@@ -103,16 +102,10 @@ io.on('connection', socket => {
         if (calle && !calle.inCall && calle.isTaken) {
             const me = socket.handshake.query.username
             const requestId = calle.name;
-            const timeOutId = setTimeout(() => {
-                io.to(socket.id).emit('on-response', null);
-                io.to(calle.name).emit('on-cancel-request');
-                deleteRequest(requestId);
-            }, TIME_OUT);
-
-            requests.push({ "createAt": new Date(), "requestId": requestId, "timeOutId": timeOutId, "username": me });
+            requests.push({ "createAt": new Date(), "requestId": requestId, "username": me });
             socket.join(requestId);
             socket.handshake.query.requestId = requestId;
-            io.to(calle.name).emit('on-request', { username: me, offer: offer, requestId });
+            io.to(calle.name).emit('on-request', { username: me, offer: offer, requestId: requestId });
         } else {
             io.to(socket.id).emit('on-response', null);
         }
@@ -129,20 +122,16 @@ io.on('connection', socket => {
     });
 
     socket.on('response', ({ requestId, answer }) => {
-        let request = requests.find(item => item.requestId === requestId);
-        const username = request.username;
-
-        deleteRequest(requestId);
+        const request = requests.find(item => item.requestId === requestId);
 
         if (answer) {
-            const me = socket.handshake.query.username
-            let meUser = users.find(item => item.name === me);
+            let meUser = users.find(item => item.name === request.name);
             meUser.inCall = true;
             socket.join(requestId);
             socket.handshake.query.requestId = requestId;
-            io.to(me).emit('on-response', answer);
+            io.to(request.name).emit('on-response', answer);
         } else {
-            io.to(me).emit('on-response', null);
+            io.to(request.name).emit('on-response', null);
         }
 
     });
