@@ -19,6 +19,10 @@ app.get('/users', (req, res) => {
     res.send(users);
 });
 
+app.get('/requests', (req, res) => {
+    res.send(requests);
+});
+
 app.get('/reset', (req, res) => {
     users = [{
             name: "rmacias",
