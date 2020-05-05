@@ -105,7 +105,7 @@ io.on('connection', socket => {
             const requestId = calle.name;
             const timeOutId = setTimeout(() => {
                 io.to(socket.id).emit('on-response', null);
-                requestId.io.to(calle.name).emit('on-cancel-request');
+                io.to(calle.name).emit('on-cancel-request');
                 deleteRequest(requestId);
             }, TIME_OUT);
 
