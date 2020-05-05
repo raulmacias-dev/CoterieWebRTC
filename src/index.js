@@ -83,7 +83,7 @@ io.on('connection', socket => {
     io.to(socket.id).emit('on-connected', users)
 
     socket.on('join',({user})=>{
-        findUser = users.find(item => item.name === user.name);
+        findUser = users.find(item => item.name === user['name']);
         if(findUser){
             io.to(socket.id).emit('on-join',{"resp": "User exist."});
         }else{
