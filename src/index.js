@@ -24,13 +24,13 @@ app.get('/requests', (req, res) => {
 
 app.get('/reset', (req, res) => {
     users = [{
-            name: "rmacias",
-            avatar: "https://cdn4.iconfinder.com/data/icons/avatars-circle-2/72/146-512.png",
+            nickname: "rmacias",
+            photoUrl: "https://cdn4.iconfinder.com/data/icons/avatars-circle-2/72/146-512.png",
             inCall: false
         },
         {
-            name: "wizard",
-            avatar: "https://cdn4.iconfinder.com/data/icons/avatars-21/512/avatar-circle-human-male-3-512.png",
+            nickname: "wizard",
+            photoUrl: "https://cdn4.iconfinder.com/data/icons/avatars-21/512/avatar-circle-human-male-3-512.png",
             inCall: false
         }
     ];
@@ -41,13 +41,13 @@ app.get('/reset', (req, res) => {
 
 
 let users = [{
-        name: "rmacias",
-        avatar: "https://cdn4.iconfinder.com/data/icons/avatars-circle-2/72/146-512.png",
+        nickname: "rmacias",
+        photoUrl: "https://cdn4.iconfinder.com/data/icons/avatars-circle-2/72/146-512.png",
         inCall: false
     },
     {
-        name: "wizard",
-        avatar: "https://cdn4.iconfinder.com/data/icons/avatars-21/512/avatar-circle-human-male-3-512.png",
+        nickname: "wizard",
+        photoUrl: "https://cdn4.iconfinder.com/data/icons/avatars-21/512/avatar-circle-human-male-3-512.png",
         inCall: false
     }
 ];
@@ -69,7 +69,7 @@ function deleteRequest(requestId) {
 };
 
 function deleteUser(username) {
-    const index = users.findIndex(item => item.name === username);
+    const index = users.findIndex(item => item.nickname === username);
     if (index !== -1) {
         users = users.splice(index, 1); // remove the user from connected users
     }
@@ -84,7 +84,7 @@ io.on('connection', socket => {
 
     socket.on('join',(user)=>{
         let newuser = JSON.parse(user);
-        findUser = users.find(item => item.name === newuser.name);
+        findUser = users.find(item => item.nickname === newuser.nickname);
         if(findUser != null){
             io.to(socket.id).emit('on-join',users);
         }else{
@@ -94,7 +94,7 @@ io.on('connection', socket => {
     })
 
     socket.on('pick', (username) => {
-        let user = users.find(item => item.name === username);
+        let user = users.find(item => item.nickname === username);
         if (user) {
             socket.join(username);
             socket.handshake.query.username = username;
@@ -105,7 +105,7 @@ io.on('connection', socket => {
     })
 
     socket.on('request', ({ username, offer }) => {
-        let calle = users.find(item => item.name === username);
+        let calle = users.find(item => item.nickname === username);
         if (calle && !calle.inCall) {
             const me = socket.handshake.query.username;
             const requestId = username;
@@ -148,7 +148,7 @@ io.on('connection', socket => {
 
     socket.on('candidate', ({ him, candidate }) => {
         console.log('candidate', him);
-        let user = users.find(item => item.name === him);
+        let user = users.find(item => item.nickname === him);
         if (user) {
             console.log('candidate to', him);
             io.to(him).emit('on-candidate', candidate);
@@ -172,7 +172,7 @@ io.on('connection', socket => {
             socket.handshake.query.requestId = null;
             io.to(calle).emit('on-cancell-request');
             io.to(query.username).emit('on-finish-call');
-            let user = users.find(item => item.name === query.username);
+            let user = users.find(item => item.nickname === query.username);
             query.username = null;
         }
     });
