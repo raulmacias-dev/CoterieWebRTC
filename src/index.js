@@ -23,34 +23,14 @@ app.get('/requests', (req, res) => {
 });
 
 app.get('/reset', (req, res) => {
-    users = [{
-            nickname: "rmacias",
-            photoUrl: "https://cdn4.iconfinder.com/data/icons/avatars-circle-2/72/146-512.png",
-            inCall: false
-        },
-        {
-            nickname: "wizard",
-            photoUrl: "https://cdn4.iconfinder.com/data/icons/avatars-21/512/avatar-circle-human-male-3-512.png",
-            inCall: false
-        }
-    ];
+    users = [];
     resetRequests();
     res.send(users);
 });
 
 
 
-let users = [{
-        nickname: "rmacias",
-        photoUrl: "https://cdn4.iconfinder.com/data/icons/avatars-circle-2/72/146-512.png",
-        inCall: false
-    },
-    {
-        nickname: "wizard",
-        photoUrl: "https://cdn4.iconfinder.com/data/icons/avatars-21/512/avatar-circle-human-male-3-512.png",
-        inCall: false
-    }
-];
+let users = [];
 
 let requests = []
 
@@ -90,6 +70,14 @@ io.on('connection', socket => {
         }else{
             users.push(newuser);
             io.to(socket.id).emit('on-join',users);
+        }
+    })
+
+    socket.on('logout',(user)=>{
+        let loguser = JSON.parse(user);
+        findUser = users.find(item => item.nickname === logouser.nickname);
+        if(findUser != null){
+            users.pop(findUser);
         }
     })
 
