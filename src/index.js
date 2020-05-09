@@ -9,49 +9,20 @@ const app = express();
 const server = http.Server(app);
 const io = socketio(server);
 
+let requests = []
 
 app.get('/', (req, res) => {
     res.send('CoterieWebRTC');
-});
-
-app.get('/users', (req, res) => {
-    res.send(users);
 });
 
 app.get('/requests', (req, res) => {
     res.send(requests);
 });
 
-app.get('/reset', (req, res) => {
-    users = [];
-    resetRequests();
-    res.send(users);
-});
-
-
-
-let users = [];
-
-let requests = []
-
-function resetRequests() {
-    requests.forEach((item) => {
-        deleteRequest(item.requestId);
-    })
-    requests = [];
-}
-
 function deleteRequest(requestId) {
     const index = requests.findIndex(item => item.requestId === requestId);
     if (index !== -1) {
         requests = requests.splice(index, 1); // remove the user from connected users
-    }
-};
-
-function deleteUser(username) {
-    const index = users.findIndex(item => item.nickname === username);
-    if (index !== -1) {
-        users = users.splice(index, 1); // remove the user from connected users
     }
 };
 
@@ -62,17 +33,6 @@ io.on('connection', socket => {
 
     io.to(socket.id).emit('on-connected', users)
 
-    socket.on('join',(user)=>{
-        let newuser = JSON.parse(user);
-        findUser = users.find(item => item.nickname === newuser.nickname);
-        if(findUser != null){
-            io.to(socket.id).emit('on-join',users);
-        }else{
-            users.push(newuser);
-            io.to(socket.id).emit('on-join',users);
-        }
-    })
-
     socket.on('logout',(user)=>{
         let loguser = JSON.parse(user);
         findUser = users.find(item => item.nickname === logouser.nickname);
@@ -81,29 +41,29 @@ io.on('connection', socket => {
         }
     })
 
-    socket.on('pick', (username) => {
-        let user = users.find(item => item.nickname === username);
-        if (user) {
+    socket.on('assigned', (username) => {
+        try {
             socket.join(username);
             socket.handshake.query.username = username;
             io.to(socket.id).emit('on-assigned', username);
-        } else {
+        } catch (error) {
             io.to(socket.id).emit('on-assigned', null);
         }
     })
 
     socket.on('request', ({ username, offer }) => {
-        let calle = users.find(item => item.nickname === username);
-        if (calle && !calle.inCall) {
+
+        try {
             const me = socket.handshake.query.username;
             const requestId = username;
             requests.push({ "createAt": new Date(), "requestId": requestId, "username": me });
             socket.join(requestId);
             socket.handshake.query.requestId = requestId;
             io.to(username).emit('on-request', { username: me, offer: offer, requestId: requestId });
-        } else {
+        } catch (error) {
             io.to(socket.id).emit('on-response', null);
         }
+
     })
 
     socket.on('cancel-request', () => {
@@ -119,12 +79,6 @@ io.on('connection', socket => {
     socket.on('response', ({ requestId, answer }) => {
 
         if (answer) {
-            //let req = requests.find(item => item.requestId === requestId);
-            //let me = users.find(item => item.name === req.username);
-            //me.inCall = true;
-            //let calle = users.find(item => item.name === requestId);
-            //calle.inCall = true;
-
             socket.join(requestId);
             socket.handshake.query.requestId = requestId;
             io.to(requestId).emit('on-response', answer);
@@ -135,12 +89,13 @@ io.on('connection', socket => {
     });
 
     socket.on('candidate', ({ him, candidate }) => {
-        console.log('candidate', him);
-        let user = users.find(item => item.nickname === him);
-        if (user) {
-            console.log('candidate to', him);
+
+        try {
             io.to(him).emit('on-candidate', candidate);
+        } catch (error) {
+            io.to(him).emit('on-candidate', null);
         }
+
     });
 
     socket.on('finish-call', () => {
@@ -155,13 +110,16 @@ io.on('connection', socket => {
     socket.on('disconnect', () => {
         const { query } = socket.handshake.query;
         if (query) {
+            
             deleteRequest(query.requestId);
             const calle = query.requestId;
-            socket.handshake.query.requestId = null;
+            
             io.to(calle).emit('on-cancell-request');
             io.to(query.username).emit('on-finish-call');
-            let user = users.find(item => item.nickname === query.username);
-            query.username = null;
+            
+            socket.handshake.query.requestId = null;
+            socket.handshake.query.username = null;
+
         }
     });
 });
