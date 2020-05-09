@@ -31,7 +31,7 @@ io.on('connection', socket => {
 
     console.log('User connected');
 
-    io.to(socket.id).emit('on-connected', users)
+    io.to(socket.id).emit('on-connected');
 
     socket.on('logout',(user)=>{
         let loguser = JSON.parse(user);
